@@ -1,4 +1,5 @@
 ![951518](https://github.com/user-attachments/assets/f4691b4a-3d6e-4365-ac87-1fc293573292)
+<img width="512" height="512" alt="unnamed" src="https://github.com/user-attachments/assets/c256c868-d0a1-4213-bc6f-d720ace9ac6b" />
 
 ### memory-game
 -Introduction
