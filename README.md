@@ -11,26 +11,26 @@ The Memory game is a classic card-matching game where the player flip two cards 
  ##  Why I Chose This Game 
 I enjoy games that test concentration and memory
 ##  Minimum Requirements
-- HTML,CSS (Flexbox layout)
+-HTML,CSS (Flexbox layout)
   A grid of face-down cards
   Clear instructions somewhere on the screen
-- JavaScript (DOM, logic, event handling)
+-JavaScript (DOM, logic, event handling)
 When the player clicks a cards, it flips and shows its image
 The player can flip two cards at a time
 If the two cards match, they stay face-up and can't be clicked again
 Once all card pairs are matched, display message in HTML like : "You win" or also "Play again"
 ## pseudocode 
--Set up game board:Create an array of card objects (each image appears twice)
+1.Set up game board:Create an array of card objects (each image appears twice)
 Shuffle the card array
 For each card:
     Create a card element
     Add front and back faces
     Add click event listener to flip the card
     Append to the game board
--Track game state: flippedCards = []      // Max 2 cards at a time
+2.Track game state: flippedCards = []      // Max 2 cards at a time
 matchedCards = []      // Store matched cards
 isBusy = false          // Prevent interaction while checking
--Card click logic:If is Busy or card already matched or flipped:
+3.Card click logic:If is Busy or card already matched or flipped:
     return
 
 Flip the card
@@ -46,9 +46,9 @@ If flippedCards has 2 cards:
         Flip them back down
     Clear flippedCards
     isBusy = false
--Check for win:If matchedCards.length equals total cards:
+4.Check for win:If matchedCards.length equals total cards:
     Show win message
--Reset game:Clear board
+5.Reset game:Clear board
 Shuffle cards again
 Reset all variables
 Recreate and render cards
