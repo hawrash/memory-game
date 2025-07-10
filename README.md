@@ -11,15 +11,36 @@ The Memory game is a classic card-matching game where the player flip two cards 
 5. Match all the pairs to win
  ##  Why I Chose This Game 
 I enjoy games that test concentration and memory
+
+ **Play the game here**: [https://your-username.github.io/memory-game/](https://your-username.github.io/memory-game/)  
+📁 **Project planning and pseudocode**: See the [Planning Section](#-pseudocode-game-logic)
+
+
 ##  Minimum Requirements
--HTML,CSS (Flexbox layout)
-  A grid of face-down cards
-  Clear instructions somewhere on the screen
--JavaScript (DOM, logic, event handling)
-When the player clicks a cards, it flips and shows its image
-The player can flip two cards at a time
-If the two cards match, they stay face-up and can't be clicked again
-Once all card pairs are matched, display message in HTML like : "You win" or also "Play again"
+1. HTML & CSS
+
+A grid of face-down cards using Flexbox
+
+Clear instructions visible on the screen
+
+2. JavaScript
+
+When a player clicks a card, it flips and reveals its emoji
+
+Two cards can be flipped at a time
+
+If the cards match, they remain face-up and become unclickable
+
+When all pairs are matched, display a message in the HTML like:
+
+✅ "You win!"
+
+🔄 "Play again" button
+
+3. DOM Manipulation  
+
+4. Git + GitHub
+  
 ## pseudocode 
 1.Set up game board:Create an array of card objects (each image appears twice)
 Shuffle the card array
