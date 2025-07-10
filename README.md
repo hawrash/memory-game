@@ -27,9 +27,11 @@ For each card:
     Add front and back faces
     Add click event listener to flip the card
     Append to the game board
+
 2.Track game state: flippedCards = []      // Max 2 cards at a time
 matchedCards = []      // Store matched cards
 isBusy = false          // Prevent interaction while checking
+
 3.Card click logic:If is Busy or card already matched or flipped:
     return
 
@@ -46,8 +48,8 @@ If flippedCards has 2 cards:
         Flip them back down
     Clear flippedCards
     isBusy = false
-4.Check for win:If matchedCards.length equals total cards:
-    Show win message
+4.Check for win:If matchedCards.length equals total cards:Show win message
+
 5.Reset game:Clear board
 Shuffle cards again
 Reset all variables
