@@ -6,7 +6,7 @@ A fun and simple memory-matching game built with HTML, CSS, and JavaScript. The 
 3. If they match, they stay visible.
 4. If not, they flip back after a short delay.
 5. Match all the pairs to win
-6. ##  Why I Chose This Game
+ ##  Why I Chose This Game
 I enjoy games that test concentration and memory
 ##  Technologies Used
 - HTML
