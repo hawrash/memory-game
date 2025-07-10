@@ -48,9 +48,7 @@ If flippedCards has 2 cards:
         Flip them back down
     Clear flippedCards
     isBusy = false
+
 4.Check for win:If matchedCards.length equals total cards:Show win message
 
-5.Reset game:Clear board
-Shuffle cards again
-Reset all variables
-Recreate and render cards
+5.Reset game:Clear board Shuffle cards againReset all variables Recreate and render cards
