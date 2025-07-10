@@ -29,7 +29,8 @@ For each card:
     Add click event listener to flip the card
     Append to the game board
 
-2.Track game state: flippedCards = []      // Max 2 cards at a time
+2.Track game state: 
+flippedCards = []      // Max 2 cards at a time
 matchedCards = []      // Store matched cards
 isBusy = false          // Prevent interaction while checking
 
