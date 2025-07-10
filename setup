@@ -1,1 +1,29 @@
+### Memory-Game
 
+Clone your newly created repo into your `~/code` directory with the `git clone` command:
+
+```bash
+git clone https://github.com/<your-username>/u1-js-browser-game-tic-tac-toe-lab.git
+```
+`cd` into your new cloned directory, `Memory-game`:
+
+```bash
+cd Memory-game
+```
+Then, create a `js` directory, and a `css` directory. You can make both of these directories at the same time by adding a space between them after the `mkdir` command!
+
+```bash
+mkdir js css
+```
+
+Next, create an `app.js` file in the `js` directory, a `style.css` file in the `css` directory, and an `index.html` file in the root of the project. Create all of these files at the same time by adding a space between them after the `touch` command. These files will hold your work for this lab:
+
+```bash
+touch ./js/app.js ./css/style.css index.html
+```
+
+With the files created, open the contents of the directory in VS Code:
+
+```bash
+code .
+```
