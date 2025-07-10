@@ -1,3 +1,4 @@
+![memory_game_adults_emoji](https://github.com/user-attachments/assets/3b9bf3d0-93c7-4068-8fb8-587cf254cba4)
 # memory-game
 A fun and simple memory-matching game built with HTML, CSS, and JavaScript. The goal is to match all the emoji pairs as quickly as possible!
 ##  How to Play
@@ -6,7 +7,8 @@ A fun and simple memory-matching game built with HTML, CSS, and JavaScript. The 
 3. If they match, they stay visible.
 4. If not, they flip back after a short delay.
 5. Match all the pairs to win
- ##  Why I Chose This Game
+ ##  Why I Chose This Game 
+ame
 I enjoy games that test concentration and memory
 ##  Technologies Used
 - HTML
