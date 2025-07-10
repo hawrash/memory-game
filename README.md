@@ -32,10 +32,7 @@ For each card:
 matchedCards = []      // Store matched cards
 isBusy = false          // Prevent interaction while checking
 
-3.Card click logic:If is Busy or card already matched or flipped:
-    return
-
-Flip the card
+3.Card click logic:If is Busy or card already matched or flipped:return Flip the card
 Add it to flippedCards
 
 If flippedCards has 2 cards:
