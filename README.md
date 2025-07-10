@@ -2,7 +2,8 @@
 <img width="512" height="512" alt="unnamed" src="https://github.com/user-attachments/assets/c256c868-d0a1-4213-bc6f-d720ace9ac6b" />
 
 # memory-game
--Introduction
+Introduction
+
 The Memory game is a classic card-matching game where the player flip two cards at a time to try to find matching pairs. The goal is to match all pairs with the fewest moves possible. This game strengthens logic skills and reinforces DOM manipulation in JavaScript.
 ##  How to Play
 1. Click the "Start" or refresh the page to begin.
