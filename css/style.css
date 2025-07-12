@@ -1,0 +1,56 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background-color: purple;
+  color: white;
+  padding: 20px;
+  transition: background-color 0.5s, color 0.5s;
+}
+
+#start-screen {
+  padding: 100px 20px;
+  border-radius: 12px;
+  max-width: 400px;
+  margin: 100px auto;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 1.2rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#game-screen {
+  color: black;
+}
+
+#timer {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: black;
+}
+
+.hidden {
+  display: none;
+}
+
+.game-board {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.card {
+  width: 100px;
+  height: 150px;
+  background-color: blue;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
