@@ -1,56 +1,61 @@
-body {
-  font-family: Arial, sans-serif;
-  text-align: center;
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
   background-color: purple;
+  font-family: Arial, sans-serif;
   color: white;
-  padding: 20px;
-  transition: background-color 0.5s, color 0.5s;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-#start-screen {
-  padding: 100px 20px;
-  border-radius: 12px;
-  max-width: 400px;
-  margin: 100px auto;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+#start-screen,
+#game-screen {
+  display: none;
+  text-align: center;
+}
+
+#start-screen.active,
+#game-screen.active {
+  display: block;
 }
 
 button {
-  padding: 10px 20px;
-  font-size: 1.2rem;
-  background-color: #007bff;
-  color: white;
+  padding: 20px 50px;
+  font-size: 22px;
+  background-color: white;
+  color: purple;
   border: none;
-  border-radius: 8px;
+  border-radius: 50px;
   cursor: pointer;
+  transition: transform 0.2s;
 }
 
-#game-screen {
-  color: black;
+button:hover {
+  transform: scale(1.05);
 }
 
 #timer {
-  font-size: 1.5rem;
-  margin-bottom: 20px;
-  color: black;
-}
-
-.hidden {
-  display: none;
+  font-size: 28px;
+  margin-bottom: 30px;
 }
 
 .game-board {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, 100px);
+  gap: 15px;
   justify-content: center;
-  gap: 20px;
-  flex-wrap: wrap;
 }
 
 .card {
   width: 100px;
-  height: 150px;
+  height: 100px;
+  border-radius: 16px;
   background-color: blue;
-  border-radius: 10px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, transform 0.2s;
 }
