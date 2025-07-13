@@ -14,7 +14,7 @@ The Memory game is a classic card-matching game where the player flip two cards 
  ##  Why I Chose This Game 
 I enjoy games that test concentration and memory
 
- **Play the game here**: [https://your-username.github.io/memory-game/](https://your-username.github.io/memory-game/)  
+ **Play the game here**: [https://your-username.github.io/memory-game/](http://127.0.0.1:5500/)  
 📁 **Project planning and pseudocode**: See the [Planning Section](#-pseudocode-game-logic)
 
 
