@@ -164,7 +164,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (matched.length === gameBoard.children.length) {
           clearInterval(timer);
 
-          // ✅ Game finished
+          
           if (currentLevel === 3) {
             winMessage.textContent = "🏆 You finished all levels! Well done!";
             winMessage.style.display = "block";
