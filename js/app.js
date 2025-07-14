@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const scoreDisplay = document.getElementById("score");
   const startBtn = document.getElementById("start-btn");
   const winMessage = document.getElementById("win-message");
+  const progressBar = document.getElementById("progress-bar");
 
   let currentLevel = 1;
   let timePenalty = 0;
@@ -15,9 +16,9 @@ document.addEventListener("DOMContentLoaded", () => {
   let gameOver = false;
 
   const levelConfigs = {
-    1: { pairs: 3, time: 40 },
-    2: { pairs: 6, time: 30 },
-    3: { pairs: 8, time: 20 },
+    1: { pairs: 3, time: 60 },
+    2: { pairs: 6, time: 50 },
+    3: { pairs: 8, time: 40 },
   };
 
   let time;
@@ -25,6 +26,11 @@ document.addEventListener("DOMContentLoaded", () => {
   let flipped = [];
   let matched = [];
   let isBusy = false;
+
+  const allEmojis = [
+    "🥑", "🍐", "🍇", "🍓", "🍒", "🍑",
+    "🥝", "🥭", "🍍", "🍏"
+  ];
 
   startBtn.addEventListener("click", () => {
     if (!gameOver) {
@@ -49,15 +55,20 @@ document.addEventListener("DOMContentLoaded", () => {
     time = Math.max(10, base.time - timePenalty);
     timerDisplay.textContent = `Level ${currentLevel} - Time: ${time}s`;
     scoreDisplay.textContent = `Score: ${score}`;
+    progressBar.style.width = "100%";
 
     startTimer();
     generateCards(totalPairs);
   }
 
   function startTimer() {
+    const maxTime = levelConfigs[currentLevel].time - timePenalty;
     timer = setInterval(() => {
       time--;
       timerDisplay.textContent = `Level ${currentLevel} - Time: ${time}s`;
+      const progress = (time / maxTime) * 100;
+      progressBar.style.width = `${progress}%`;
+
       if (time === 0) {
         clearInterval(timer);
         loseRound();
@@ -98,50 +109,58 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function generateCards(pairCount) {
-    const allColors = [
-      "red", "yellow", "green", "pink", "orange", "gray",
-      "blue", "purple", "brown", "lime"
-    ];
-    const neededColors = allColors.slice(0, pairCount);
-    const colorPairs = [...neededColors, ...neededColors];
-    colorPairs.sort(() => Math.random() - 0.5);
+    const selected = allEmojis.slice(0, pairCount);
+    const emojis = [...selected, ...selected];
+    emojis.sort(() => Math.random() - 0.5);
 
     gameBoard.innerHTML = "";
     const cards = [];
 
-    colorPairs.forEach(color => {
+    emojis.forEach(emoji => {
       const card = document.createElement("div");
       card.className = "card";
-      card.dataset.color = color;
+      card.dataset.emoji = emoji;
       card.dataset.state = "hidden";
-      card.style.backgroundColor = "#241F3B";
+
+      const front = document.createElement("div");
+      front.className = "front";
+      front.textContent = emoji;
+
+      const back = document.createElement("div");
+      back.className = "back";
+      back.textContent = "❓";
+
+      card.appendChild(front);
+      card.appendChild(back);
+
       gameBoard.appendChild(card);
       cards.push(card);
+    });
+
+    
+    cards.forEach(card => {
+      card.classList.add("flipped");
     });
 
     isBusy = true;
     gameBoard.style.pointerEvents = "none";
 
-    cards.forEach(card => {
-      card.style.backgroundColor = card.dataset.color;
-    });
-
     setTimeout(() => {
       cards.forEach(card => {
-        card.style.backgroundColor = "#241F3B";
+        card.classList.remove("flipped");
         card.dataset.state = "hidden";
         card.addEventListener("click", () => handleClick(card));
       });
       isBusy = false;
       gameBoard.style.pointerEvents = "auto";
-    }, 1000);
+    }, 2000); 
   }
 
   function handleClick(card) {
     if (isBusy || card.dataset.state !== "hidden") return;
     if (flipped.length >= 2) return;
 
-    card.style.backgroundColor = card.dataset.color;
+    card.classList.add("flipped");
     card.dataset.state = "flipped";
     flipped.push(card);
 
@@ -150,7 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
       gameBoard.style.pointerEvents = "none";
       const [first, second] = flipped;
 
-      if (first.dataset.color === second.dataset.color) {
+      if (first.dataset.emoji === second.dataset.emoji) {
         first.dataset.state = "matched";
         second.dataset.state = "matched";
         matched.push(first, second);
@@ -164,7 +183,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (matched.length === gameBoard.children.length) {
           clearInterval(timer);
 
-          
           if (currentLevel === 3) {
             winMessage.textContent = "🏆 You finished all levels! Well done!";
             winMessage.style.display = "block";
@@ -189,14 +207,14 @@ document.addEventListener("DOMContentLoaded", () => {
             extraPairs = 0;
             timePenalty = 0;
             lossCount = 0;
-            currentLevel = Math.min(currentLevel + 1, 3);
+            currentLevel++;
             setTimeout(startGame, 2500);
           }
         }
       } else {
         setTimeout(() => {
-          first.style.backgroundColor = "#241F3B";
-          second.style.backgroundColor = "#241F3B";
+          first.classList.remove("flipped");
+          second.classList.remove("flipped");
           first.dataset.state = "hidden";
           second.dataset.state = "hidden";
           flipped = [];
@@ -231,4 +249,3 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.style.cursor = "pointer";
   }
 });
-

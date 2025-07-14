@@ -10,35 +10,29 @@
 
   <div id="start-screen" class="active">
     <h1>🧠 Memory Game</h1>
-
-    <div id="instructions" style="max-width: 400px; text-align: left; margin: 20px auto; font-size: 16px; background: #fff; padding: 15px; border-radius: 10px; color: #000080;">
-      <h3 style="text-align:center;">ℹ️ Instructions:</h3>
-      <ul style="padding-left: 20px;">
-        <li>There are 3 levels:
-          <ul>
-            <li>1️⃣ Easy – Level 1</li>
-            <li>2️⃣ Medium – Level 2</li>
-            <li>3️⃣ Hard – Level 3</li>
-          </ul>
-        </li>
-        <li>Each correct match gives <strong>+10 points</strong></li>
-        <li>Each mistake subtracts <strong>-5 points</strong></li>
-        <li>If you lose <strong>3 times</strong>, game over ❌</li>
-        <li>Finish all 3 levels to win 🏆</li>
-        <li>Time gets shorter every level ⏳</li>
-      </ul>
-    </div>
-
+    <p class="instructions">
+      There are 3 levels:<br>
+      1️⃣ Easy <br>
+      2️⃣ Medium <br>
+      3️⃣ Hard <br><br>
+      ✅ Correct +10 pts<br>
+      ❌ Wrong -5 pts<br>
+      Lose after 3 failed attempts<br>
+      Win by finishing all levels!
+    </p>
     <button id="start-btn">Start</button>
   </div>
+  <script src="./js/app.js" defer></script>
+
 
   <div id="game-screen">
     <h2 id="timer">Time: 30s</h2>
-    <h2 id="score">Score: 0</h2>
+    <div id="progress-container">
+      <div id="progress-bar"></div>
+    </div>
+    <h3 id="score">Score: 0</h3>
     <div id="game-board" class="game-board"></div>
-    <div id="win-message">🎉 You Win! 🎉</div>
+    <div id="win-message"></div>
   </div>
 
-  <script src="js/app.js" defer></script>
-</body>
 </html>
