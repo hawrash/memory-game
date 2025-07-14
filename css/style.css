@@ -1,61 +1,66 @@
-body,
-html {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100%;
-  background-color: purple;
+body {
   font-family: Arial, sans-serif;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  text-align: center;
+  background-color: #fde6e4;
+  color: #241f3b;
+  margin: 0;
+  padding: 20px;
 }
 
 #start-screen,
 #game-screen {
   display: none;
-  text-align: center;
 }
 
 #start-screen.active,
 #game-screen.active {
-  display: block;
-}
-
-button {
-  padding: 20px 50px;
-  font-size: 22px;
-  background-color: white;
-  color: purple;
-  border: none;
-  border-radius: 50px;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-button:hover {
-  transform: scale(1.05);
-}
-
-#timer {
-  font-size: 28px;
-  margin-bottom: 30px;
-}
-
-.game-board {
-  display: grid;
-  grid-template-columns: repeat(4, 100px);
-  gap: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
+  min-height: 100vh;
+}
+
+#start-btn {
+  background-color: #241f3b;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 18px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+#start-btn:hover {
+  background-color: #3a2e59;
+}
+
+#timer,
+#score {
+  font-size: 20px;
+  margin: 5px 0;
+}
+
+#win-message {
+  color: #000080;
+  font-size: 24px;
+  margin-top: 20px;
+  display: none;
+}
+
+#game-board {
+  display: grid;
+  grid-template-columns: repeat(4, 80px);
+  grid-gap: 15px;
+  justify-content: center;
+  margin-top: 20px;
 }
 
 .card {
-  width: 100px;
-  height: 100px;
-  border-radius: 16px;
-  background-color: blue;
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
+  background-color: #241f3b;
+  transition: background-color 0.3s, transform 0.3s;
 }
