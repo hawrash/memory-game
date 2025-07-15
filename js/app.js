@@ -8,6 +8,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const winMessage = document.getElementById("win-message");
   const progressBar = document.getElementById("progress-bar");
 
+  const gameMusic = new Audio("./js/assets/audio/game.mp3");
+  const winSound = new Audio("./js/assets/audio/win.mp3");
+  const loseSound = new Audio("./js/assets/audio/lose.mp3");
+  
+
+  gameMusic.loop = true;
+  gameMusic.volume = 0.5;
+  winSound.volume = 0.5;
+  loseSound.volume = 0.6;
+  
+
   let currentLevel = 1;
   let timePenalty = 0;
   let extraPairs = 0;
@@ -27,13 +38,11 @@ document.addEventListener("DOMContentLoaded", () => {
   let matched = [];
   let isBusy = false;
 
-  const allEmojis = [
-    "🥑", "🍐", "🍇", "🍓", "🍒", "🍑",
-    "🥝", "🥭", "🍍", "🍏"
-  ];
+  const allEmojis = ["🥑", "🍐", "🍇", "🍓", "🍒", "🍑", "🥝", "🥭", "🍍", "🍏"];
 
   startBtn.addEventListener("click", () => {
     if (!gameOver) {
+      try { gameMusic.play(); } catch (err) {}
       startScreen.classList.remove("active");
       gameScreen.classList.add("active");
       startGame();
@@ -47,8 +56,9 @@ document.addEventListener("DOMContentLoaded", () => {
     isBusy = false;
     winMessage.style.display = "none";
     winMessage.innerHTML = "";
+    gameBoard.style.pointerEvents = "auto";
 
-    const base = levelConfigs[currentLevel] || { pairs: 8, time: 20 };
+    const base = levelConfigs[currentLevel] || { pairs: 8, time: 40 };
     let totalPairs = base.pairs + extraPairs;
     if (totalPairs > 10) totalPairs = 10;
 
@@ -66,9 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
     timer = setInterval(() => {
       time--;
       timerDisplay.textContent = `Level ${currentLevel} - Time: ${time}s`;
-      const progress = (time / maxTime) * 100;
-      progressBar.style.width = `${progress}%`;
-
+      progressBar.style.width = (time / maxTime) * 100 + "%";
       if (time === 0) {
         clearInterval(timer);
         loseRound();
@@ -77,34 +85,28 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function loseRound() {
-    winMessage.textContent = "⏰ Time's up! Try again!";
+    winMessage.textContent = "⏰ Time's up!";
     winMessage.style.display = "block";
     gameBoard.style.pointerEvents = "none";
-
     lossCount++;
     if (lossCount >= 3) {
+      try { loseSound.play(); } catch (e) {}
       winMessage.textContent = "❌ Game Over! You lost 3 times.";
       gameOver = true;
-      gameBoard.style.pointerEvents = "none";
-
       const retryBtn = document.createElement("button");
       retryBtn.textContent = "🔁 Try Again";
       styleButton(retryBtn);
-
       retryBtn.addEventListener("click", () => {
         resetGame();
         retryBtn.remove();
         startGame();
       });
-
       winMessage.appendChild(document.createElement("br"));
       winMessage.appendChild(retryBtn);
       return;
     }
-
     timePenalty += 5;
     extraPairs += 1;
-
     setTimeout(startGame, 2000);
   }
 
@@ -112,39 +114,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const selected = allEmojis.slice(0, pairCount);
     const emojis = [...selected, ...selected];
     emojis.sort(() => Math.random() - 0.5);
-
     gameBoard.innerHTML = "";
     const cards = [];
-
     emojis.forEach(emoji => {
       const card = document.createElement("div");
       card.className = "card";
       card.dataset.emoji = emoji;
       card.dataset.state = "hidden";
-
       const front = document.createElement("div");
       front.className = "front";
       front.textContent = emoji;
-
       const back = document.createElement("div");
       back.className = "back";
-      back.textContent = "❓";
-
+      back.textContent = "🌟";
       card.appendChild(front);
       card.appendChild(back);
-
       gameBoard.appendChild(card);
       cards.push(card);
     });
-
-    
-    cards.forEach(card => {
-      card.classList.add("flipped");
-    });
-
+    cards.forEach(card => card.classList.add("flipped"));
     isBusy = true;
     gameBoard.style.pointerEvents = "none";
-
     setTimeout(() => {
       cards.forEach(card => {
         card.classList.remove("flipped");
@@ -153,65 +143,24 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       isBusy = false;
       gameBoard.style.pointerEvents = "auto";
-    }, 2000); 
+    }, 2000);
   }
 
   function handleClick(card) {
-    if (isBusy || card.dataset.state !== "hidden") return;
+    if (isBusy) return;
+    if (card.dataset.state !== "hidden") return;
     if (flipped.length >= 2) return;
-
     card.classList.add("flipped");
     card.dataset.state = "flipped";
     flipped.push(card);
-
     if (flipped.length === 2) {
       isBusy = true;
       gameBoard.style.pointerEvents = "none";
       const [first, second] = flipped;
-
       if (first.dataset.emoji === second.dataset.emoji) {
-        first.dataset.state = "matched";
-        second.dataset.state = "matched";
-        matched.push(first, second);
-        flipped = [];
-        isBusy = false;
-        gameBoard.style.pointerEvents = "auto";
-
-        score += 10;
-        scoreDisplay.textContent = `Score: ${score}`;
-
-        if (matched.length === gameBoard.children.length) {
-          clearInterval(timer);
-
-          if (currentLevel === 3) {
-            winMessage.textContent = "🏆 You finished all levels! Well done!";
-            winMessage.style.display = "block";
-            gameOver = true;
-            gameBoard.style.pointerEvents = "none";
-
-            const retryBtn = document.createElement("button");
-            retryBtn.textContent = "🔁 Play Again";
-            styleButton(retryBtn);
-
-            retryBtn.addEventListener("click", () => {
-              resetGame();
-              retryBtn.remove();
-              startGame();
-            });
-
-            winMessage.appendChild(document.createElement("br"));
-            winMessage.appendChild(retryBtn);
-          } else {
-            winMessage.textContent = "🎉 You Win! Next level coming...";
-            winMessage.style.display = "block";
-            extraPairs = 0;
-            timePenalty = 0;
-            lossCount = 0;
-            currentLevel++;
-            setTimeout(startGame, 2500);
-          }
-        }
+        handleMatch(first, second);
       } else {
+        try { wrongSound.play(); } catch (e) {}
         setTimeout(() => {
           first.classList.remove("flipped");
           second.classList.remove("flipped");
@@ -220,10 +169,48 @@ document.addEventListener("DOMContentLoaded", () => {
           flipped = [];
           isBusy = false;
           gameBoard.style.pointerEvents = "auto";
-
           score = Math.max(0, score - 5);
           scoreDisplay.textContent = `Score: ${score}`;
         }, 800);
+      }
+    }
+  }
+
+  function handleMatch(first, second) {
+    try { matchSound.play(); } catch (e) {}
+    first.dataset.state = "matched";
+    second.dataset.state = "matched";
+    matched.push(first, second);
+    flipped = [];
+    isBusy = false;
+    gameBoard.style.pointerEvents = "auto";
+    score += 10;
+    scoreDisplay.textContent = `Score: ${score}`;
+    if (matched.length === gameBoard.children.length) {
+      clearInterval(timer);
+      if (currentLevel === 3) {
+        try { winSound.play(); } catch (e) {}
+        winMessage.textContent = "🏆 You Win!";
+        winMessage.style.display = "block";
+        gameOver = true;
+        const retryBtn = document.createElement("button");
+        retryBtn.textContent = "🔁 Play Again";
+        styleButton(retryBtn);
+        retryBtn.addEventListener("click", () => {
+          resetGame();
+          retryBtn.remove();
+          startGame();
+        });
+        winMessage.appendChild(document.createElement("br"));
+        winMessage.appendChild(retryBtn);
+      } else {
+        winMessage.textContent = " Next level coming...";
+        winMessage.style.display = "block";
+        extraPairs = 0;
+        timePenalty = 0;
+        lossCount = 0;
+        currentLevel++;
+        setTimeout(startGame, 2500);
       }
     }
   }
@@ -249,3 +236,4 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.style.cursor = "pointer";
   }
 });
+
