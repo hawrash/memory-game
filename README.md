@@ -1,12 +1,12 @@
 ![951518](https://github.com/user-attachments/assets/f4691b4a-3d6e-4365-ac87-1fc293573292)
-<img width="512" height="512" alt="unnamed" src="https://github.com/user-attachments/assets/c256c868-d0a1-4213-bc6f-d720ace9ac6b" />
+<img width="724" height="435" alt="Screenshot 2025-07-15 15 46 18" src="https://github.com/user-attachments/assets/583d2ce3-83fd-4f1a-8744-7c06a6fe9b7a" />
 
 # memory-game
 Introduction
 
 The Memory game is a classic card-matching game where the player flip two cards at a time to try to find matching pairs. The goal is to match all pairs with the fewest moves possible. This game strengthens logic skills and reinforces DOM manipulation in JavaScript.
 ##  How to Play
-1. Click the "Start" or refresh the page to begin.
+1. Click the "Start" .
 2. Flip two cards at a time.
 3. If they match, they stay visible.
 4. If not, they flip back after a short delay.
@@ -15,7 +15,7 @@ The Memory game is a classic card-matching game where the player flip two cards 
 I enjoy games that test concentration and memory
 
  **Play the game here**: [https://your-username.github.io/memory-game/](http://127.0.0.1:5500/)  
-📁 **Project planning and pseudocode**: See the [Planning Section](#-pseudocode-game-logic)
+
 
 
 ##  Minimum Requirements
