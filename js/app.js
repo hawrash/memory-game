@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // === DOM ELEMENTS ===
   const startScreen = document.getElementById("start-screen");
   const gameScreen = document.getElementById("game-screen");
   const gameBoard = document.getElementById("game-board");
@@ -7,18 +8,22 @@ document.addEventListener("DOMContentLoaded", () => {
   const startBtn = document.getElementById("start-btn");
   const winMessage = document.getElementById("win-message");
   const progressBar = document.getElementById("progress-bar");
+  const emojiOptions = document.getElementById("emoji-options");
+  const emojiWarning = document.getElementById("emoji-warning");
 
+  // === AUDIO ===
   const gameMusic = new Audio("./js/assets/audio/game.mp3");
   const winSound = new Audio("./js/assets/audio/win.mp3");
   const loseSound = new Audio("./js/assets/audio/lose.mp3");
-  
+  const matchSound = new Audio("./js/assets/audio/match.mp3");
+  const wrongSound = new Audio("./js/assets/audio/wrong.mp3");
 
   gameMusic.loop = true;
   gameMusic.volume = 0.5;
   winSound.volume = 0.5;
   loseSound.volume = 0.6;
-  
 
+  // === GAME STATE ===
   let currentLevel = 1;
   let timePenalty = 0;
   let extraPairs = 0;
@@ -37,10 +42,57 @@ document.addEventListener("DOMContentLoaded", () => {
   let flipped = [];
   let matched = [];
   let isBusy = false;
+  let customEmojis = [];
+  const selectedEmojis = new Set();
 
-  const allEmojis = ["🥑", "🍐", "🍇", "🍓", "🍒", "🍑", "🥝", "🥭", "🍍", "🍏"];
+  // === EMOJI PICKER ===
+  const emojiPool = [
+    "🐱", "🐶", "🦊", "🐻", "🐼", "🐯", "🦁", "🐸", "🐲", "👾",
+    "🎃", "👻", "💀", "🌈", "⭐", "🍕", "🍔", "🍟", "🍩", "🍉",
+    "🚀", "🛸", "⚽", "🏀", "🎮", "🎲", "🧩", "🎯", "💎", "🔮" ,
+    "💙", "💡", "🏐", "🥇", "💥", "🪐", "🤡","👽"
+  ];
 
+  emojiPool.forEach(emoji => {
+    const btn = document.createElement("button");
+    btn.textContent = emoji;
+    btn.className = "emoji-btn";
+    btn.style.fontSize = "24px";
+    btn.style.padding = "10px";
+    btn.style.borderRadius = "10px";
+    btn.style.border = "2px solid #ccc";
+    btn.style.backgroundColor = "white";
+    btn.style.cursor = "pointer";
+
+    btn.addEventListener("click", () => {
+      if (selectedEmojis.has(emoji)) {
+        selectedEmojis.delete(emoji);
+        btn.style.backgroundColor = "white";
+        btn.style.border = "2px solid #ccc";
+      } else {
+        selectedEmojis.add(emoji);
+        btn.style.backgroundColor = "#40ba94ff";
+        btn.style.border = "2px solid #40ba94ff";
+      }
+    });
+
+    emojiOptions.appendChild(btn);
+  });
+
+  
   startBtn.addEventListener("click", () => {
+    const inputList = Array.from(selectedEmojis);
+    const { pairs } = levelConfigs[currentLevel] || { pairs: 8 };
+    const required = Math.min(10, pairs + extraPairs);
+
+    if (inputList.length < required) {
+      emojiWarning.textContent = `⚠️ Please select at least ${required} unique emojis.`;
+      return;
+    }
+
+    emojiWarning.textContent = "";
+    customEmojis = inputList;
+
     if (!gameOver) {
       try { gameMusic.play(); } catch (err) {}
       startScreen.classList.remove("active");
@@ -49,6 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // === START GAME ===
   function startGame() {
     clearInterval(timer);
     flipped = [];
@@ -58,11 +111,15 @@ document.addEventListener("DOMContentLoaded", () => {
     winMessage.innerHTML = "";
     gameBoard.style.pointerEvents = "auto";
 
-    const base = levelConfigs[currentLevel] || { pairs: 8, time: 40 };
-    let totalPairs = base.pairs + extraPairs;
-    if (totalPairs > 10) totalPairs = 10;
+    const { pairs, time: baseTime } = levelConfigs[currentLevel] || { pairs: 8, time: 40 };
+    let totalPairs = Math.min(10, pairs + extraPairs);
 
-    time = Math.max(10, base.time - timePenalty);
+    if (customEmojis.length < totalPairs) {
+      emojiWarning.textContent = `⚠️ You need at least ${totalPairs} emojis for this level.`;
+      return;
+    }
+
+    time = Math.max(10, baseTime - timePenalty);
     timerDisplay.textContent = `Level ${currentLevel} - Time: ${time}s`;
     scoreDisplay.textContent = `Score: ${score}`;
     progressBar.style.width = "100%";
@@ -71,6 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
     generateCards(totalPairs);
   }
 
+  
   function startTimer() {
     const maxTime = levelConfigs[currentLevel].time - timePenalty;
     timer = setInterval(() => {
@@ -84,57 +142,39 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 1000);
   }
 
-  function loseRound() {
-    winMessage.textContent = "⏰ Time's up!";
-    winMessage.style.display = "block";
-    gameBoard.style.pointerEvents = "none";
-    lossCount++;
-    if (lossCount >= 3) {
-      try { loseSound.play(); } catch (e) {}
-      winMessage.textContent = "❌ Game Over! You lost 3 times.";
-      gameOver = true;
-      const retryBtn = document.createElement("button");
-      retryBtn.textContent = "🔁 Try Again";
-      styleButton(retryBtn);
-      retryBtn.addEventListener("click", () => {
-        resetGame();
-        retryBtn.remove();
-        startGame();
-      });
-      winMessage.appendChild(document.createElement("br"));
-      winMessage.appendChild(retryBtn);
-      return;
-    }
-    timePenalty += 5;
-    extraPairs += 1;
-    setTimeout(startGame, 2000);
-  }
-
+  // === GENERATE CARDS ===
   function generateCards(pairCount) {
-    const selected = allEmojis.slice(0, pairCount);
-    const emojis = [...selected, ...selected];
-    emojis.sort(() => Math.random() - 0.5);
+    const selected = customEmojis.slice(0, pairCount);
+    const cardsArray = [...selected, ...selected];
+    cardsArray.sort(() => Math.random() - 0.5);
+
     gameBoard.innerHTML = "";
     const cards = [];
-    emojis.forEach(emoji => {
+
+    cardsArray.forEach(emoji => {
       const card = document.createElement("div");
       card.className = "card";
       card.dataset.emoji = emoji;
       card.dataset.state = "hidden";
+
       const front = document.createElement("div");
       front.className = "front";
       front.textContent = emoji;
+
       const back = document.createElement("div");
       back.className = "back";
       back.textContent = "🌟";
+
       card.appendChild(front);
       card.appendChild(back);
       gameBoard.appendChild(card);
       cards.push(card);
     });
+
     cards.forEach(card => card.classList.add("flipped"));
     isBusy = true;
     gameBoard.style.pointerEvents = "none";
+
     setTimeout(() => {
       cards.forEach(card => {
         card.classList.remove("flipped");
@@ -146,16 +186,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 2000);
   }
 
+  // === HANDLE CARD CLICK ===
   function handleClick(card) {
-    if (isBusy) return;
-    if (card.dataset.state !== "hidden") return;
-    if (flipped.length >= 2) return;
+    if (isBusy || card.dataset.state !== "hidden" || flipped.length >= 2) return;
+
     card.classList.add("flipped");
     card.dataset.state = "flipped";
     flipped.push(card);
+
     if (flipped.length === 2) {
       isBusy = true;
       gameBoard.style.pointerEvents = "none";
+
       const [first, second] = flipped;
       if (first.dataset.emoji === second.dataset.emoji) {
         handleMatch(first, second);
@@ -176,6 +218,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // === HANDLE MATCH ===
   function handleMatch(first, second) {
     try { matchSound.play(); } catch (e) {}
     first.dataset.state = "matched";
@@ -186,25 +229,16 @@ document.addEventListener("DOMContentLoaded", () => {
     gameBoard.style.pointerEvents = "auto";
     score += 10;
     scoreDisplay.textContent = `Score: ${score}`;
+
     if (matched.length === gameBoard.children.length) {
       clearInterval(timer);
       if (currentLevel === 3) {
         try { winSound.play(); } catch (e) {}
         winMessage.textContent = "🏆 You Win!";
-        winMessage.style.display = "block";
+        showEndButton("🔁 Play Again");
         gameOver = true;
-        const retryBtn = document.createElement("button");
-        retryBtn.textContent = "🔁 Play Again";
-        styleButton(retryBtn);
-        retryBtn.addEventListener("click", () => {
-          resetGame();
-          retryBtn.remove();
-          startGame();
-        });
-        winMessage.appendChild(document.createElement("br"));
-        winMessage.appendChild(retryBtn);
       } else {
-        winMessage.textContent = " Next level coming...";
+        winMessage.textContent = "🎯 Next level coming...";
         winMessage.style.display = "block";
         extraPairs = 0;
         timePenalty = 0;
@@ -215,6 +249,27 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // === LOSE ROUND ===
+  function loseRound() {
+    winMessage.textContent = "⏰ Time's up!";
+    winMessage.style.display = "block";
+    gameBoard.style.pointerEvents = "none";
+    lossCount++;
+
+    if (lossCount >= 3) {
+      try { loseSound.play(); } catch (e) {}
+      winMessage.textContent = "❌ Game Over! You lost 3 times.";
+      showEndButton("🔁 Try Again");
+      gameOver = true;
+      return;
+    }
+
+    timePenalty += 5;
+    extraPairs += 1;
+    setTimeout(startGame, 2000);
+  }
+
+  // === RESET GAME ===
   function resetGame() {
     score = 0;
     lossCount = 0;
@@ -223,6 +278,21 @@ document.addEventListener("DOMContentLoaded", () => {
     timePenalty = 0;
     extraPairs = 0;
     winMessage.style.display = "none";
+  }
+
+  function showEndButton(text) {
+    const retryBtn = document.createElement("button");
+    retryBtn.textContent = text;
+    styleButton(retryBtn);
+    retryBtn.addEventListener("click", () => {
+      resetGame();
+      retryBtn.remove();
+      startScreen.classList.add("active");
+      gameScreen.classList.remove("active");
+    });
+    winMessage.appendChild(document.createElement("br"));
+    winMessage.appendChild(retryBtn);
+    winMessage.style.display = "block";
   }
 
   function styleButton(btn) {
@@ -236,4 +306,3 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.style.cursor = "pointer";
   }
 });
-
