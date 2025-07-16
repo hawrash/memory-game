@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // === DOM ELEMENTS ===
   const startScreen = document.getElementById("start-screen");
   const gameScreen = document.getElementById("game-screen");
   const gameBoard = document.getElementById("game-board");
@@ -11,7 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const emojiOptions = document.getElementById("emoji-options");
   const emojiWarning = document.getElementById("emoji-warning");
 
-  // === AUDIO ===
   const gameMusic = new Audio("./js/assets/audio/game.mp3");
   const winSound = new Audio("./js/assets/audio/win.mp3");
   const loseSound = new Audio("./js/assets/audio/lose.mp3");
@@ -23,7 +21,6 @@ document.addEventListener("DOMContentLoaded", () => {
   winSound.volume = 0.5;
   loseSound.volume = 0.6;
 
-  // === GAME STATE ===
   let currentLevel = 1;
   let timePenalty = 0;
   let extraPairs = 0;
@@ -32,9 +29,9 @@ document.addEventListener("DOMContentLoaded", () => {
   let gameOver = false;
 
   const levelConfigs = {
-    1: { pairs: 3, time: 60 },
-    2: { pairs: 6, time: 50 },
-    3: { pairs: 8, time: 40 },
+    1: { pairs: 3, time: 40 },
+    2: { pairs: 6, time: 30 },
+    3: { pairs: 8, time: 20 },
   };
 
   let time;
@@ -45,12 +42,10 @@ document.addEventListener("DOMContentLoaded", () => {
   let customEmojis = [];
   const selectedEmojis = new Set();
 
-  // === EMOJI PICKER ===
   const emojiPool = [
     "🐱", "🐶", "🦊", "🐻", "🐼", "🐯", "🦁", "🐸", "🐲", "👾",
     "🎃", "👻", "💀", "🌈", "⭐", "🍕", "🍔", "🍟", "🍩", "🍉",
-    "🚀", "🛸", "⚽", "🏀", "🎮", "🎲", "🧩", "🎯", "💎", "🔮" ,
-    "💙", "💡", "🏐", "🥇", "💥", "🪐", "🤡","👽"
+    "🚀", "🛸", "⚽", "🏀", "🎮", "🎲", "🧩", "🎯", "💎", "🔮"
   ];
 
   emojiPool.forEach(emoji => {
@@ -71,37 +66,34 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.style.border = "2px solid #ccc";
       } else {
         selectedEmojis.add(emoji);
-        btn.style.backgroundColor = "#40ba94ff";
-        btn.style.border = "2px solid #40ba94ff";
+        btn.style.backgroundColor = "#4cafafc4";
+        btn.style.border = "2px solid #4cafafc4";
       }
     });
 
     emojiOptions.appendChild(btn);
   });
 
-  
   startBtn.addEventListener("click", () => {
     const inputList = Array.from(selectedEmojis);
     const { pairs } = levelConfigs[currentLevel] || { pairs: 8 };
     const required = Math.min(10, pairs + extraPairs);
 
     if (inputList.length < required) {
-      emojiWarning.textContent = `⚠️ Please select at least ${required} unique emojis.`;
-      return;
-    }
+      emojiWarning.textContent = `⚠️ Please select at least ${required} unique emojis to start.`;
+    } else {
+      emojiWarning.textContent = "";
+      customEmojis = inputList;
 
-    emojiWarning.textContent = "";
-    customEmojis = inputList;
-
-    if (!gameOver) {
-      try { gameMusic.play(); } catch (err) {}
-      startScreen.classList.remove("active");
-      gameScreen.classList.add("active");
-      startGame();
+      if (!gameOver) {
+        try { gameMusic.play(); } catch (err) {}
+        startScreen.classList.remove("active");
+        gameScreen.classList.add("active");
+        startGame();
+      }
     }
   });
 
-  // === START GAME ===
   function startGame() {
     clearInterval(timer);
     flipped = [];
@@ -114,11 +106,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const { pairs, time: baseTime } = levelConfigs[currentLevel] || { pairs: 8, time: 40 };
     let totalPairs = Math.min(10, pairs + extraPairs);
 
-    if (customEmojis.length < totalPairs) {
-      emojiWarning.textContent = `⚠️ You need at least ${totalPairs} emojis for this level.`;
-      return;
-    }
-
     time = Math.max(10, baseTime - timePenalty);
     timerDisplay.textContent = `Level ${currentLevel} - Time: ${time}s`;
     scoreDisplay.textContent = `Score: ${score}`;
@@ -128,7 +115,6 @@ document.addEventListener("DOMContentLoaded", () => {
     generateCards(totalPairs);
   }
 
-  
   function startTimer() {
     const maxTime = levelConfigs[currentLevel].time - timePenalty;
     timer = setInterval(() => {
@@ -142,7 +128,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 1000);
   }
 
-  // === GENERATE CARDS ===
   function generateCards(pairCount) {
     const selected = customEmojis.slice(0, pairCount);
     const cardsArray = [...selected, ...selected];
@@ -186,9 +171,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 2000);
   }
 
-  // === HANDLE CARD CLICK ===
   function handleClick(card) {
-    if (isBusy || card.dataset.state !== "hidden" || flipped.length >= 2) return;
+    const isCardBusy = isBusy;
+    const isCardNotHidden = card.dataset.state !== "hidden";
+    const isTwoCardsFlipped = flipped.length >= 2;
+    if (isCardBusy) return;
+    if (isCardNotHidden) return;
+    if (isTwoCardsFlipped) return;
 
     card.classList.add("flipped");
     card.dataset.state = "flipped";
@@ -218,7 +207,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // === HANDLE MATCH ===
   function handleMatch(first, second) {
     try { matchSound.play(); } catch (e) {}
     first.dataset.state = "matched";
@@ -238,7 +226,7 @@ document.addEventListener("DOMContentLoaded", () => {
         showEndButton("🔁 Play Again");
         gameOver = true;
       } else {
-        winMessage.textContent = "🎯 Next level coming...";
+        winMessage.textContent = " Next level coming...";
         winMessage.style.display = "block";
         extraPairs = 0;
         timePenalty = 0;
@@ -249,7 +237,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // === LOSE ROUND ===
   function loseRound() {
     winMessage.textContent = "⏰ Time's up!";
     winMessage.style.display = "block";
@@ -269,7 +256,6 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(startGame, 2000);
   }
 
-  // === RESET GAME ===
   function resetGame() {
     score = 0;
     lossCount = 0;
