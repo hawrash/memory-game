@@ -13,13 +13,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const gameMusic = new Audio("./js/assets/audio/game.mp3");
   const winSound = new Audio("./js/assets/audio/win.mp3");
   const loseSound = new Audio("./js/assets/audio/lose.mp3");
-  const matchSound = new Audio("./js/assets/audio/match.mp3");
-  const wrongSound = new Audio("./js/assets/audio/wrong.mp3");
+  
 
   gameMusic.loop = true;
   gameMusic.volume = 0.5;
   winSound.volume = 0.5;
   loseSound.volume = 0.6;
+  
 
   let currentLevel = 1;
   let timePenalty = 0;
@@ -27,6 +27,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let score = 0;
   let lossCount = 0;
   let gameOver = false;
+
+  const MAX_EMOJIS = 8;
 
   const levelConfigs = {
     1: { pairs: 3, time: 40 },
@@ -42,10 +44,13 @@ document.addEventListener("DOMContentLoaded", () => {
   let customEmojis = [];
   const selectedEmojis = new Set();
 
+  startBtn.disabled = true;
+
   const emojiPool = [
-    "🐱", "🐶", "🦊", "🐻", "🐼", "🐯", "🦁", "🐸", "🐲", "👾",
+    "🐱", "🦊", "🐻", "🐼", "🐯", "🦁", "🐸", "🐲", "👾",
     "🎃", "👻", "💀", "🌈", "⭐", "🍕", "🍔", "🍟", "🍩", "🍉",
-    "🚀", "🛸", "⚽", "🏀", "🎮", "🎲", "🧩", "🎯", "💎", "🔮"
+    "🚀", "🛸", "⚽", "🏀", "🎮", "🎲", "🧩", "🎯", "💎", "🔮",
+    "👽", "🤖", "🏐", "🥇", "💙", "🎵", "💜"
   ];
 
   emojiPool.forEach(emoji => {
@@ -65,10 +70,16 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.style.backgroundColor = "white";
         btn.style.border = "2px solid #ccc";
       } else {
+        if (selectedEmojis.size >= MAX_EMOJIS) return;
         selectedEmojis.add(emoji);
         btn.style.backgroundColor = "#4cafafc4";
         btn.style.border = "2px solid #4cafafc4";
       }
+
+      startBtn.disabled = selectedEmojis.size !== MAX_EMOJIS;
+      emojiWarning.textContent = selectedEmojis.size !== MAX_EMOJIS
+        ? `⚠️ Please select exactly ${MAX_EMOJIS} unique emojis to start.`
+        : "";
     });
 
     emojiOptions.appendChild(btn);
@@ -76,21 +87,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   startBtn.addEventListener("click", () => {
     const inputList = Array.from(selectedEmojis);
-    const { pairs } = levelConfigs[currentLevel] || { pairs: 8 };
-    const required = Math.min(10, pairs + extraPairs);
 
-    if (inputList.length < required) {
-      emojiWarning.textContent = `⚠️ Please select at least ${required} unique emojis to start.`;
-    } else {
-      emojiWarning.textContent = "";
-      customEmojis = inputList;
+    if (inputList.length !== MAX_EMOJIS) return;
 
-      if (!gameOver) {
-        try { gameMusic.play(); } catch (err) {}
-        startScreen.classList.remove("active");
-        gameScreen.classList.add("active");
-        startGame();
-      }
+    customEmojis = inputList;
+    emojiOptions.style.display = "none";
+    emojiWarning.style.display = "none";
+
+    if (!gameOver) {
+      try { gameMusic.play(); } catch (err) {}
+      startScreen.classList.remove("active");
+      gameScreen.classList.add("active");
+      startGame();
     }
   });
 
@@ -104,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
     gameBoard.style.pointerEvents = "auto";
 
     const { pairs, time: baseTime } = levelConfigs[currentLevel] || { pairs: 8, time: 40 };
-    let totalPairs = Math.min(10, pairs + extraPairs);
+    let totalPairs = Math.min(MAX_EMOJIS, pairs + extraPairs);
 
     time = Math.max(10, baseTime - timePenalty);
     timerDisplay.textContent = `Level ${currentLevel} - Time: ${time}s`;
@@ -172,12 +180,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function handleClick(card) {
-    const isCardBusy = isBusy;
-    const isCardNotHidden = card.dataset.state !== "hidden";
-    const isTwoCardsFlipped = flipped.length >= 2;
-    if (isCardBusy) return;
-    if (isCardNotHidden) return;
-    if (isTwoCardsFlipped) return;
+    if (isBusy) return;
+    if (card.dataset.state !== "hidden") return;
+    if (flipped.length >= 2) return;
 
     card.classList.add("flipped");
     card.dataset.state = "flipped";
@@ -264,6 +269,17 @@ document.addEventListener("DOMContentLoaded", () => {
     timePenalty = 0;
     extraPairs = 0;
     winMessage.style.display = "none";
+
+    emojiOptions.style.display = "flex";
+    emojiWarning.style.display = "block";
+    emojiWarning.textContent = "";
+
+    startBtn.disabled = true;
+    selectedEmojis.clear();
+    [...emojiOptions.children].forEach(btn => {
+      btn.style.backgroundColor = "white";
+      btn.style.border = "2px solid #ccc";
+    });
   }
 
   function showEndButton(text) {
