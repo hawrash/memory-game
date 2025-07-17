@@ -5,13 +5,6 @@
 Introduction
 
 The Memory game is a classic card-matching game where the player flip two cards at a time to try to find matching pairs. The goal is to match all pairs with the fewest moves possible. This game strengthens logic skills and reinforces DOM manipulation in JavaScript.
-##  How to Play
-1. Choose the emoji you want .
-2.  Click the "Start" .
-3. Flip two cards at a time.
-4. If they match, they stay visible.
-5. If not, they flip back after a short delay.
-6. Match all the pairs to win .
    
  ##  Why I Chose This Game 
 I enjoy games that test memory
@@ -47,81 +40,42 @@ When all pairs are matched, display a message in the HTML like:
   
 ## pseudocode  
 
+START GAME
+- Player picks emojis, clicks Start → hide start, show game
+- level = 1, score = 0, lossCount = 0
+- call setupLevel(level)
 
-1. SET UP GAME BOARD
-----------------------
-- On game start:
-  - Hide start screen
-  - Show game screen
-  - Load level configuration (pairs and time)
-  - Calculate total pairs with extra difficulty
-  - Shuffle emoji array with selected pairs (each emoji appears twice)
-  - For each emoji in the shuffled list:
-      - Create a card element with front (emoji) and back (🌟)
-      - Set card state to "hidden"
-      - Add to game board
-  - Briefly flip all cards (2 seconds), then flip back
-  - Add click event listener to each card
+SETUP LEVEL(level):
+- Determine pairCount & timeLimit
+- Prepare emoji pairs, shuffle, render cards
+- Briefly reveal all cards, then hide
+- Start timer, enable card clicks
 
+ON CARD CLICK(card):
+- If busy or flipped/matched, ignore
+- Flip card, add to flippedList
+- If two flipped:
+    - busy = true
+    - If match:
+        • mark matched, score++, play “match” sound
+    - Else:
+        • wait, flip back, score--, play “wrong” sound
+    - Clear flippedList, busy = false
+- call checkStatus()
 
-2. TRACK GAME STATE
-----------------------
-- Define:
-  - flippedCards = []        // to hold up to 2 flipped cards
-  - matchedCards = []        // store matched cards
-  - isBusy = false           // lock clicks while checking
-  - score = 0
-  - time = levelTime - penalty
-  - lossCount = 0
-  - gameOver = false
+CHECK STATUS:
+- If all matched:
+    - If level == 3: win game
+    - Else: level++, setupLevel(level)
+- If timer hits zero:
+    - lossCount++
+    - If lossCount == 3: game over
 
-
-3. CARD CLICK LOGIC
-----------------------
-- On card click:
-  - If isBusy or card is already flipped/matched → ignore
-  - Flip the card and mark as "flipped"
-  - Add card to flippedCards
-
-  - If two cards are flipped:
-      - Set isBusy = true
-      - If the two emojis match:
-          - Mark both as "matched"
-          - Add to matchedCards
-          - Increase score
-      - Else:
-          - Flip both cards back after delay
-          - Subtract score
-      - Clear flippedCards
-      - Set isBusy = false
+RESET GAME:
+- Reset score, level, lossCount, gameOver flag
+- Show start screen
 
 
-4. CHECK FOR WIN
-----------------------
-- After each successful match:
-  - If matchedCards.length equals total number of cards:
-      - If current level is 3:
-          - Show "You Win!" message
-          - Play win sound
-          - Offer replay button
-      - Else:
-          - Show "Next level" message
-          - Increase level
-          - Reset penalties
-          - Start next level after delay
-
-
-5. RESET GAME
-----------------------
-- On game over or replay:
-  - Reset:
-    - score = 0
-    - currentLevel = 1
-    - timePenalty = 0
-    - extraPairs = 0
-    - lossCount = 0
-    - gameOver = false
-  - Start game from level 1
 
  
 ## future enhancements
