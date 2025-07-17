@@ -8,7 +8,7 @@ The Memory game is a classic card-matching game where the player flip two cards 
 ##  How to Play
 1. Choose the emoji you want .
 2.  Click the "Start" .
-3. Flip two cards at the same time.
+3. Flip two cards at a time.
 4. If they match, they stay visible.
 5. If not, they flip back after a short delay.
 6. Match all the pairs to win .
