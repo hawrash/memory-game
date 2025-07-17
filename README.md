@@ -1,5 +1,5 @@
 ![951518](https://github.com/user-attachments/assets/f4691b4a-3d6e-4365-ac87-1fc293573292)
-<img width="724" height="435" alt="Screenshot 2025-07-15 15 46 18" src="https://github.com/user-attachments/assets/583d2ce3-83fd-4f1a-8744-7c06a6fe9b7a" />
+<img width="935" height="437" alt="Screenshot 2025-07-17 10 02 05" src="https://github.com/user-attachments/assets/429aee2a-d0a5-4c10-a985-8698419411c1" />
 
 # memory-game
 Introduction
