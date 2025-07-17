@@ -14,7 +14,7 @@ The Memory game is a classic card-matching game where the player flip two cards 
 6. Match all the pairs to win .
    
  ##  Why I Chose This Game 
-I enjoy games that test concentration and memory
+I enjoy games that test memory
 
  **Play the game here**: [https://your-username.github.io/memory-game/](https://kindly-force.surge.sh/))  
 
