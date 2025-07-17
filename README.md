@@ -6,11 +6,13 @@ Introduction
 
 The Memory game is a classic card-matching game where the player flip two cards at a time to try to find matching pairs. The goal is to match all pairs with the fewest moves possible. This game strengthens logic skills and reinforces DOM manipulation in JavaScript.
 ##  How to Play
-1. Click the "Start" .
-2. Flip two cards at a time.
-3. If they match, they stay visible.
-4. If not, they flip back after a short delay.
-5. Match all the pairs to win
+1. Choose the emoji you want .
+2.  Click the "Start" .
+3. Flip two cards at the same time.
+4. If they match, they stay visible.
+5. If not, they flip back after a short delay.
+6. Match all the pairs to win .
+   
  ##  Why I Chose This Game 
 I enjoy games that test concentration and memory
 
